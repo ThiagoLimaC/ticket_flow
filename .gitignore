@@ -1,1 +1,14 @@
-/venv
+# ambiente virtual
+venv/
+
+# variáveis de ambiente — nunca versionar
+.env
+
+# cache do Python
+__pycache__/
+*.pyc
+*.pyo
+
+# arquivos de IDE
+.idea/
+.vscode/
