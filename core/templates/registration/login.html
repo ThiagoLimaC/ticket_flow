@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Login | TicketFlow{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="col-md-4">
+        <div class="card shadow border-0">
+            <div class="card-body p-5">
+                <div class="text-center mb-4">
+                    <h2 class="fw-bold text-primary">TicketFlow</h2>
+                    <p class="text-muted">Entre com suas credenciais</p>
+                </div>
+
+                {% if form.errors %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        Usuário ou senha incorretos.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endif %}
+
+                <form method="post" action="{% url 'login' %}">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="id_username" class="form-label">Usuário</label>
+                        <input type="text" name="username" autofocus maxlength="150" required id="id_username" class="form-control" placeholder="Seu usuário">
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="id_password" class="form-label">Senha</label>
+                        <input type="password" name="password" required id="id_password" class="form-control" placeholder="********">
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">Aceder ao Sistema</button>
+                    </div>
+                    
+                    <input type="hidden" name="next" value="{{ next }}">
+                </form>
+            </div>
+        </div>
+        <div class="text-center mt-3">
+            <small class="text-muted">&copy; 2024 TechFix Soluções</small>
+        </div>
+    </div>
+</div>
+{% endblock %}

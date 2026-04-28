@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard | TicketFlow{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Painel de Chamados</h2>
+    {% if not user.is_staff %}
+        <a href="#" class="btn btn-primary">Novo Chamado</a>
+    {% endif %}
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card bg-primary text-white shadow-sm">
+            <div class="card-body text-center">
+                <h5 class="card-title">Total de Chamados</h5>
+                <h2 class="display-6 fw-bold">{{ chamados.count }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-warning text-dark shadow-sm">
+            <div class="card-body text-center">
+                <h5 class="card-title">Abertos</h5>
+                <h2 class="display-6 fw-bold">{{ total_abertos }}</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card bg-info text-white shadow-sm">
+            <div class="card-body text-center">
+                <h5 class="card-title">Em Atendimento</h5>
+                <h2 class="display-6 fw-bold">{{ total_em_atendimento }}</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <h5 class="card-title mb-3">Chamados Recentes</h5>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Título</th>
+                        <th>Status</th>
+                        <th>Prioridade</th>
+                        <th>Data</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for chamado in chamados %}
+                    <tr>
+                        <td>#{{ chamado.id }}</td>
+                        <td>{{ chamado.titulo }}</td>
+                        <td>
+                            <span class="badge {% if chamado.status == 'aberto' %}bg-warning text-dark{% elif chamado.status == 'concluido' %}bg-success{% else %}bg-info{% endif %}">
+                                {{ chamado.get_status_display }}
+                            </span>
+                        </td>
+                        <td>{{ chamado.get_prioridade_display }}</td>
+                        <td>{{ chamado.data_abertura|date:"d/m/Y H:i" }}</td>
+                        <td>
+                            <a href="#" class="btn btn-sm btn-outline-primary">Ver Detalhes</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted">Nenhum chamado encontrado.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
