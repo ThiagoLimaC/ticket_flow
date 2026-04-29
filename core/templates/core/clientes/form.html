@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}{{ titulo }} | TicketFlow{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>{{ titulo }}</h2>
+    <a href="{% url 'listar_clientes' %}" class="btn btn-outline-secondary">← Voltar</a>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label class="form-label">Nome</label>
+                {{ form.nome }}
+                {% if form.nome.errors %}
+                    <div class="text-danger small">{{ form.nome.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">CNPJ</label>
+                {{ form.cnpj }}
+                {% if form.cnpj.errors %}
+                    <div class="text-danger small">{{ form.cnpj.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Contato</label>
+                    {{ form.contato }}
+                    {% if form.contato.errors %}
+                        <div class="text-danger small">{{ form.contato.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Telefone</label>
+                    {{ form.telefone }}
+                    {% if form.telefone.errors %}
+                        <div class="text-danger small">{{ form.telefone.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label">Endereço</label>
+                {{ form.endereco }}
+                {% if form.endereco.errors %}
+                    <div class="text-danger small">{{ form.endereco.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Salvar</button>
+                <a href="{% url 'listar_clientes' %}" class="btn btn-outline-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

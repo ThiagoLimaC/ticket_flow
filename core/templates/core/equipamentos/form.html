@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}{{ titulo }} | TicketFlow{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>{{ titulo }}</h2>
+    <a href="{% url 'detalhe_cliente' cliente.id %}" class="btn btn-outline-secondary">← Voltar</a>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label class="form-label">Cliente</label>
+                {{ form.cliente }}
+                {% if form.cliente.errors %}
+                    <div class="text-danger small">{{ form.cliente.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Tipo</label>
+                    {{ form.tipo }}
+                    {% if form.tipo.errors %}
+                        <div class="text-danger small">{{ form.tipo.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Modelo</label>
+                    {{ form.modelo }}
+                    {% if form.modelo.errors %}
+                        <div class="text-danger small">{{ form.modelo.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Número de Série</label>
+                    {{ form.numero_serie }}
+                    {% if form.numero_serie.errors %}
+                        <div class="text-danger small">{{ form.numero_serie.errors }}</div>
+                    {% endif %}
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Localização</label>
+                    {{ form.localizacao }}
+                    {% if form.localizacao.errors %}
+                        <div class="text-danger small">{{ form.localizacao.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Salvar</button>
+                <a href="{% url 'detalhe_cliente' cliente.id %}" class="btn btn-outline-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
