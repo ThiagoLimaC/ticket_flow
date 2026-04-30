@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% block title %}Chamado #{{ chamado.id }} | TicketFlow{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Chamado #{{ chamado.id }}</h2>
+    <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">← Voltar</a>
+</div>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
+{% endif %}
+
+<!-- Dados do chamado -->
+<div class="card shadow-sm mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span>Dados do Chamado</span>
+        <!-- badge de status -->
+        <span class="badge
+            {% if chamado.status == 'aberto' %}bg-warning text-dark
+            {% elif chamado.status == 'em_andamento' %}bg-primary
+            {% elif chamado.status == 'aguardando' %}bg-secondary
+            {% elif chamado.status == 'resolvido' %}bg-success
+            {% elif chamado.status == 'fechado' %}bg-dark
+            {% endif %}">
+            {{ chamado.get_status_display }}
+        </span>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <p><strong>Título:</strong> {{ chamado.titulo }}</p>
+                <p><strong>Cliente:</strong> {{ chamado.cliente }}</p>
+                <p><strong>Equipamento:</strong> {{ chamado.equipamento }}</p>
+                <p><strong>Categoria:</strong> {{ chamado.categoria }}</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Prioridade:</strong> {{ chamado.get_prioridade_display }}</p>
+                <p><strong>Aberto por:</strong> {{ chamado.aberto_por.username }}</p>
+                <p><strong>Técnico:</strong> {{ chamado.tecnico_responsavel.username|default:"Não atribuído" }}</p>
+                <p><strong>Aberto em:</strong> {{ chamado.data_abertura|date:"d/m/Y H:i" }}</p>
+            </div>
+        </div>
+
+        <hr>
+        <p><strong>Descrição:</strong></p>
+        <p class="text-muted">{{ chamado.descricao }}</p>
+
+        <!-- SLA -->
+        <hr>
+        <p>
+            <strong>SLA:</strong>
+            {% if chamado.esta_atrasado %}
+                <span class="badge bg-danger">Atrasado</span>
+            {% else %}
+                <span class="badge bg-success">No prazo</span>
+            {% endif %}
+            — prazo até {{ chamado.sla_prazo|date:"d/m/Y H:i" }}
+        </p>
+
+        <!-- Diagnóstico e solução — só exibe se preenchido -->
+        {% if chamado.diagnostico %}
+            <hr>
+            <p><strong>Diagnóstico:</strong></p>
+            <p class="text-muted">{{ chamado.diagnostico }}</p>
+        {% endif %}
+
+        {% if chamado.solucao %}
+            <p><strong>Solução:</strong></p>
+            <p class="text-muted">{{ chamado.solucao }}</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Peças utilizadas -->
+{% if pecas %}
+<div class="card shadow-sm mb-4">
+    <div class="card-header">Peças Utilizadas</div>
+    <div class="card-body">
+        <table class="table table-sm mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Descrição</th>
+                    <th>Quantidade</th>
+                    <th>Custo Unitário</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for peca in pecas %}
+                <tr>
+                    <td>{{ peca.descricao }}</td>
+                    <td>{{ peca.quantidade }}</td>
+                    <td>{{ peca.custo_unitario|default:"—" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+<!-- Movimentações -->
+<div class="card shadow-sm">
+    <div class="card-header">Histórico de Movimentações</div>
+    <div class="card-body">
+        {% for mov in movimentacoes %}
+        <div class="border-start border-primary border-3 ps-3 mb-3">
+            <small class="text-muted">{{ mov.criado_em|date:"d/m/Y H:i" }} — {{ mov.responsavel.username }}</small>
+            <p class="mb-1">
+                <span class="badge bg-secondary">{{ mov.get_status_anterior_display }}</span>
+                →
+                <span class="badge bg-primary">{{ mov.get_status_novo_display }}</span>
+            </p>
+            {% if mov.comentario %}
+                <p class="text-muted small mb-0">{{ mov.comentario }}</p>
+            {% endif %}
+        </div>
+        {% empty %}
+            <p class="text-muted">Nenhuma movimentação registrada.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

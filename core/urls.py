@@ -14,4 +14,9 @@ urlpatterns = [
     # equipamentos
     path('clientes/<int:cliente_id>/equipamentos/novo/', views.criar_equipamento, name='criar_equipamento'),
     path('equipamentos/<int:equipamento_id>/editar/', views.editar_equipamento, name='editar_equipamento'),
+
+    # chamados
+    path('chamados/abrir/', views.abrir_chamado_view, name='abrir_chamado'),
+    path('chamados/<int:chamado_id>/', views.detalhe_chamado, name='detalhe_chamado'),
+
 ]

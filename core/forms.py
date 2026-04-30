@@ -1,5 +1,5 @@
 from django import forms
-from .models import EmpresaCliente, Equipamento
+from .models import EmpresaCliente, Equipamento, Chamado, Categoria
 
 
 class EmpresaClienteForm(forms.ModelForm):
@@ -28,3 +28,39 @@ class EquipamentoForm(forms.ModelForm):
             'numero_serie': forms.TextInput(attrs={'class': 'form-control'}),
             'localizacao': forms.TextInput(attrs={'class': 'form-control'}),
         }
+
+class AbrirChamadoForm(forms.ModelForm):
+
+    class Meta:
+        model = Chamado
+        fields = ['titulo', 'descricao', 'categoria', 'prioridade', 'equipamento']
+        widgets = {
+            'titulo': forms.TextInput(attrs={'class': 'form-control'}),
+            'descricao': forms.Textarea(attrs={'class': 'form-control', 'rows': 4}),
+            'categoria': forms.Select(attrs={'class': 'form-select'}),
+            'prioridade': forms.Select(attrs={'class': 'form-select'}),
+            'equipamento': forms.Select(attrs={'class': 'form-select'}),
+        }
+
+    def __init__(self, usuario, *args, **kwargs):
+        # captura o usuário antes de chamar o super().__init__()
+        # porque o super() já processa os kwargs e perderia o usuário
+        super().__init__(*args, **kwargs)
+
+        perfil = usuario.perfil
+
+        # admin vê todos os equipamentos com indicação do cliente dono
+        # cliente vê apenas os equipamentos da sua empresa
+        if perfil.is_admin:
+            self.fields['equipamento'].queryset = Equipamento.objects.select_related('cliente').all()
+        else:
+            # filtra equipamentos pelo usuário logado como aberto_por
+            # assume que o User cliente está vinculado a uma EmpresaCliente via chamados
+            # no MVP: admin cadastra o cliente e associa o User manualmente
+            self.fields['equipamento'].queryset = Equipamento.objects.filter(
+                cliente__chamados__aberto_por=usuario
+            ).distinct()
+
+        # também precisamos passar o cliente para o chamado
+        # guardamos o usuário para uso no save da view
+        self.usuario = usuario

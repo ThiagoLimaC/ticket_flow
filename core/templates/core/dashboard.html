@@ -65,7 +65,7 @@
                         <td>{{ chamado.get_prioridade_display }}</td>
                         <td>{{ chamado.data_abertura|date:"d/m/Y H:i" }}</td>
                         <td>
-                            <a href="#" class="btn btn-sm btn-outline-primary">Ver Detalhes</a>
+                            <a href="{% url 'detalhe_chamado' chamado.id %}" class="btn btn-sm btn-outline-primary">Ver Detalhes</a>
                         </td>
                     </tr>
                     {% empty %}

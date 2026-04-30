@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .models import Chamado, EmpresaCliente, Equipamento
-from .forms import EmpresaClienteForm, EquipamentoForm
+from .models import Chamado, EmpresaCliente, Equipamento, Categoria
+from .forms import EmpresaClienteForm, EquipamentoForm, AbrirChamadoForm
 from usuarios.decorators import requer_perfil
+from .services import abrir_chamado
 
 
 @login_required
@@ -110,4 +111,49 @@ def editar_equipamento(request, equipamento_id):
         'form': form,
         'cliente': equipamento.cliente,
         'titulo': 'Editar Equipamento',
+    })
+
+@login_required
+def abrir_chamado_view(request):
+    # técnico não pode abrir chamado — redireciona para o dashboard
+    if request.user.perfil.is_tecnico:
+        messages.error(request, 'Técnicos não podem abrir chamados.')
+        return redirect('dashboard')
+
+    if request.method == 'POST':
+        # passa o usuário logado como primeiro argumento do form
+        form = AbrirChamadoForm(request.user, request.POST)
+        if form.is_valid():
+            # delega a criação do chamado e da movimentação para o service
+            chamado = abrir_chamado(form, request.user)
+            messages.success(request, f'Chamado #{chamado.id} aberto com sucesso.')
+            return redirect('detalhe_chamado', chamado_id=chamado.id)
+    else:
+        # GET: form vazio já filtrado pelo usuário logado
+        form = AbrirChamadoForm(request.user)
+
+    return render(request, 'core/chamados/abrir.html', {'form': form})
+
+@login_required
+def detalhe_chamado(request, chamado_id):
+    chamado = get_object_or_404(Chamado, id=chamado_id)
+    perfil = request.user.perfil
+
+    # cliente só acessa chamados que ele mesmo abriu
+    if perfil.is_cliente and chamado.aberto_por != request.user:
+        messages.error(request, 'Você não tem acesso a este chamado.')
+        return redirect('dashboard')
+
+    # técnico só acessa chamados atribuídos a ele
+    if perfil.is_tecnico and chamado.tecnico_responsavel != request.user:
+        messages.error(request, 'Você não tem acesso a este chamado.')
+        return redirect('dashboard')
+
+    movimentacoes = chamado.movimentacoes.all()
+    pecas = chamado.pecas.all()
+
+    return render(request, 'core/chamados/detalhe.html', {
+        'chamado': chamado,
+        'movimentacoes': movimentacoes,
+        'pecas': pecas,
     })
