@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from core.models import EmpresaCliente
 
 class Perfil(models.Model):
 
@@ -21,6 +22,16 @@ class Perfil(models.Model):
         max_length=10,
         choices=Tipo.choices,
         default=Tipo.CLIENTE
+    )
+
+    # vínculo entre o usuário cliente e a empresa que ele representa
+    # null=True pois admin e técnico não têm empresa associada
+    empresa = models.ForeignKey(
+        EmpresaCliente,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='usuarios',
     )
 
     class Meta:

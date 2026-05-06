@@ -2,9 +2,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import Chamado, EmpresaCliente, Equipamento, Categoria
-from .forms import EmpresaClienteForm, EquipamentoForm, AbrirChamadoForm
+from .forms import EmpresaClienteForm, EquipamentoForm, AbrirChamadoForm, AtribuirTecnicoForm
 from usuarios.decorators import requer_perfil
-from .services import abrir_chamado
+from .services import abrir_chamado, atribuir_tecnico
 
 
 @login_required
@@ -156,4 +156,34 @@ def detalhe_chamado(request, chamado_id):
         'chamado': chamado,
         'movimentacoes': movimentacoes,
         'pecas': pecas,
+    })
+
+@requer_perfil('admin')
+def atribuir_tecnico_view(request, chamado_id):
+    chamado = get_object_or_404(Chamado, id=chamado_id)
+
+    # chamado fechado é imutável — bloqueia qualquer ação
+    if chamado.status == Chamado.Status.FECHADO:
+        messages.error(request, 'Chamado fechado não pode ser alterado.')
+        return redirect('detalhe_chamado', chamado_id=chamado.id)
+
+    # chamado já tem técnico — bloqueia reatribuição no MVP
+    if chamado.tecnico_responsavel:
+        messages.error(request, 'Este chamado já possui um técnico atribuído.')
+        return redirect('detalhe_chamado', chamado_id=chamado.id)
+
+    if request.method == 'POST':
+        form = AtribuirTecnicoForm(request.POST)
+        if form.is_valid():
+            tecnico = form.cleaned_data['tecnico']
+            # delega toda a lógica de negócio para o service
+            atribuir_tecnico(chamado, tecnico, request.user)
+            messages.success(request, f'Chamado atribuído a {tecnico.username} com sucesso.')
+            return redirect('detalhe_chamado', chamado_id=chamado.id)
+    else:
+        form = AtribuirTecnicoForm()
+
+    return render(request, 'core/chamados/atribuir.html', {
+        'form': form,
+        'chamado': chamado,
     })

@@ -4,7 +4,12 @@
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>Chamado #{{ chamado.id }}</h2>
-    <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">← Voltar</a>
+    <div class="d-flex gap-2">
+        {% if request.user.perfil.is_admin and chamado.status == 'aberto' %}
+            <a href="{% url 'atribuir_tecnico' chamado.id %}" class="btn btn-warning">Atribuir Técnico</a>
+        {% endif %}
+        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">← Voltar</a>
+    </div>
 </div>
 
 {% if messages %}

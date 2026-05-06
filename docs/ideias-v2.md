@@ -17,3 +17,11 @@ Filtro de equipamentos passa a usar `request.user.perfil.empresa`.
 
 **Impacto:** migration em `usuarios`, ajuste no `PerfilAdmin`, ajuste na
 view `abrir_chamado` e no `AbrirChamadoForm`.
+
+
+- Mensagem de erro ao acessar chamado em outro chamado e nao na dashboard como esperado
+    - Eu como tecnico entro em um chamado que não é meu
+    - nao acontece nada vou pra dashboard
+    - quando entro em um chamado que de fato é meu - a mensagem de erro aparece no detalhe do chamado
+
+- botao novo chamado para cliente nao funciona

@@ -1,5 +1,6 @@
 from django import forms
 from .models import EmpresaCliente, Equipamento, Chamado, Categoria
+from django.contrib.auth.models import User
 
 
 class EmpresaClienteForm(forms.ModelForm):
@@ -57,10 +58,18 @@ class AbrirChamadoForm(forms.ModelForm):
             # filtra equipamentos pelo usuário logado como aberto_por
             # assume que o User cliente está vinculado a uma EmpresaCliente via chamados
             # no MVP: admin cadastra o cliente e associa o User manualmente
-            self.fields['equipamento'].queryset = Equipamento.objects.filter(
-                cliente__chamados__aberto_por=usuario
-            ).distinct()
+            self.fields['equipamento'].queryset = Equipamento.objects.none()
 
         # também precisamos passar o cliente para o chamado
         # guardamos o usuário para uso no save da view
         self.usuario = usuario
+
+class AtribuirTecnicoForm(forms.Form):
+    # Form simples, não ModelForm — porque não estamos salvando
+    # um objeto novo, estamos atualizando um campo do Chamado
+    tecnico = forms.ModelChoiceField(
+        queryset=User.objects.filter(perfil__tipo='tecnico'),
+        label='Técnico',
+        widget=forms.Select(attrs={'class': 'form-select'}),
+        empty_label='Selecione um técnico',
+    )

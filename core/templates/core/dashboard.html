@@ -5,8 +5,12 @@
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>Painel de Chamados</h2>
-    {% if not user.is_staff %}
-        <a href="#" class="btn btn-primary">Novo Chamado</a>
+    {% if request.user.perfil.is_cliente or request.user.perfil.is_admin %}
+        <a href="{% url 'abrir_chamado' %}" class="btn btn-primary">Novo Chamado</a>
+    {% endif %}
+
+    {% if request.user.perfil.is_admin %}
+        <a href="{% url 'listar_clientes' %}" class="btn btn-outline-primary">Gerenciar Clientes</a>
     {% endif %}
 </div>
 
