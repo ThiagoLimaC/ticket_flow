@@ -82,12 +82,38 @@
     </div>
 </div>
 
+<!-- Registro de atendimento -->
+{% if form_atendimento %}
+<div class="card shadow-sm mb-4">
+    <div class="card-header">Registro de Atendimento</div>
+    <div class="card-body">
+        <form method="post" action="{% url 'registrar_atendimento' chamado.id %}">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label">Diagnóstico</label>
+                {{ form_atendimento.diagnostico }}
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Solução aplicada</label>
+                {{ form_atendimento.solucao }}
+            </div>
+            <div class="mb-3" style="max-width: 200px;">
+                <label class="form-label">{{ form_atendimento.tempo_gasto.label }}</label>
+                {{ form_atendimento.tempo_gasto }}
+            </div>
+            <button type="submit" class="btn btn-primary">Salvar atendimento</button>
+        </form>
+    </div>
+</div>
+{% endif %}
+
 <!-- Peças utilizadas -->
-{% if pecas %}
+{% if pecas or form_peca %}
 <div class="card shadow-sm mb-4">
     <div class="card-header">Peças Utilizadas</div>
     <div class="card-body">
-        <table class="table table-sm mb-0">
+        {% if pecas %}
+        <table class="table table-sm mb-4">
             <thead class="table-light">
                 <tr>
                     <th>Descrição</th>
@@ -100,11 +126,37 @@
                 <tr>
                     <td>{{ peca.descricao }}</td>
                     <td>{{ peca.quantidade }}</td>
-                    <td>{{ peca.custo_unitario|default:"—" }}</td>
+                    <td>{% if peca.custo_unitario %}R$ {{ peca.custo_unitario }}{% else %}—{% endif %}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+        {% endif %}
+
+        {% if form_peca %}
+        <hr class="{% if not pecas %}d-none{% endif %}">
+        <p class="fw-semibold mb-2">Adicionar peça</p>
+        <form method="post" action="{% url 'adicionar_peca' chamado.id %}">
+            {% csrf_token %}
+            <div class="row g-2 align-items-end">
+                <div class="col-md-5">
+                    <label class="form-label">Descrição</label>
+                    {{ form_peca.descricao }}
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Qtd.</label>
+                    {{ form_peca.quantidade }}
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">{{ form_peca.custo_unitario.label }}</label>
+                    {{ form_peca.custo_unitario }}
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-outline-primary w-100">Adicionar</button>
+                </div>
+            </div>
+        </form>
+        {% endif %}
     </div>
 </div>
 {% endif %}

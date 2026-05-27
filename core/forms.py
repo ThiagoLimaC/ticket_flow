@@ -1,5 +1,5 @@
 from django import forms
-from .models import EmpresaCliente, Equipamento, Chamado, Categoria
+from .models import EmpresaCliente, Equipamento, Chamado, Categoria, PecaUtilizada
 from .services import TRANSICOES_PERMITIDAS
 from django.contrib.auth.models import User
 
@@ -63,6 +63,34 @@ class AbrirChamadoForm(forms.ModelForm):
         # também precisamos passar o cliente para o chamado
         # guardamos o usuário para uso no save da view
         self.usuario = usuario
+
+class RegistrarAtendimentoForm(forms.ModelForm):
+    class Meta:
+        model = Chamado
+        fields = ['diagnostico', 'solucao', 'tempo_gasto']
+        widgets = {
+            'diagnostico': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'solucao': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'tempo_gasto': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Ex: 1.5'}),
+        }
+        labels = {
+            'tempo_gasto': 'Tempo gasto (horas)',
+        }
+
+
+class PecaUtilizadaForm(forms.ModelForm):
+    class Meta:
+        model = PecaUtilizada
+        fields = ['descricao', 'quantidade', 'custo_unitario']
+        widgets = {
+            'descricao': forms.TextInput(attrs={'class': 'form-control'}),
+            'quantidade': forms.NumberInput(attrs={'class': 'form-control', 'min': 1}),
+            'custo_unitario': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Opcional', 'step': '0.01'}),
+        }
+        labels = {
+            'custo_unitario': 'Custo unitário (R$)',
+        }
+
 
 class MudarStatusForm(forms.Form):
     novo_status = forms.ChoiceField(

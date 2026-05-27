@@ -2,9 +2,26 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import Chamado, EmpresaCliente, Equipamento, Categoria
-from .forms import EmpresaClienteForm, EquipamentoForm, AbrirChamadoForm, AtribuirTecnicoForm, MudarStatusForm
+from .forms import (
+    EmpresaClienteForm, EquipamentoForm, AbrirChamadoForm,
+    AtribuirTecnicoForm, MudarStatusForm,
+    RegistrarAtendimentoForm, PecaUtilizadaForm,
+)
 from usuarios.decorators import requer_perfil
 from .services import abrir_chamado, atribuir_tecnico, mudar_status, TRANSICOES_PERMITIDAS
+
+STATUS_ATIVOS = (Chamado.Status.EM_ANDAMENTO, Chamado.Status.AGUARDANDO)
+
+def _pode_registrar_atendimento(usuario, chamado):
+    """Retorna True se o usuário pode registrar diagnóstico/peças neste chamado."""
+    perfil = usuario.perfil
+    if chamado.status not in STATUS_ATIVOS:
+        return False
+    if perfil.is_cliente:
+        return False
+    if perfil.is_tecnico and chamado.tecnico_responsavel != usuario:
+        return False
+    return True
 
 
 @login_required
@@ -152,7 +169,12 @@ def detalhe_chamado(request, chamado_id):
     movimentacoes = chamado.movimentacoes.all()
     pecas = chamado.pecas.all()
 
-    # monta o form de mudança de status se o usuário tiver transições disponíveis
+    # forms de registro de atendimento e peças — só para quem tem permissão
+    pode_registrar = _pode_registrar_atendimento(request.user, chamado)
+    form_atendimento = RegistrarAtendimentoForm(instance=chamado) if pode_registrar else None
+    form_peca = PecaUtilizadaForm() if pode_registrar else None
+
+    # form de mudança de status — só quando há transições disponíveis
     form_status = None
     if not perfil.is_cliente and chamado.status != Chamado.Status.FECHADO:
         form_candidato = MudarStatusForm(perfil, chamado.status)
@@ -163,8 +185,50 @@ def detalhe_chamado(request, chamado_id):
         'chamado': chamado,
         'movimentacoes': movimentacoes,
         'pecas': pecas,
+        'form_atendimento': form_atendimento,
+        'form_peca': form_peca,
         'form_status': form_status,
     })
+
+@login_required
+def registrar_atendimento_view(request, chamado_id):
+    chamado = get_object_or_404(Chamado, id=chamado_id)
+
+    if not _pode_registrar_atendimento(request.user, chamado):
+        messages.error(request, 'Ação não permitida.')
+        return redirect('detalhe_chamado', chamado_id=chamado.id)
+
+    if request.method == 'POST':
+        form = RegistrarAtendimentoForm(request.POST, instance=chamado)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Atendimento registrado com sucesso.')
+        else:
+            messages.error(request, 'Erro ao salvar. Verifique os campos.')
+
+    return redirect('detalhe_chamado', chamado_id=chamado.id)
+
+
+@login_required
+def adicionar_peca_view(request, chamado_id):
+    chamado = get_object_or_404(Chamado, id=chamado_id)
+
+    if not _pode_registrar_atendimento(request.user, chamado):
+        messages.error(request, 'Ação não permitida.')
+        return redirect('detalhe_chamado', chamado_id=chamado.id)
+
+    if request.method == 'POST':
+        form = PecaUtilizadaForm(request.POST)
+        if form.is_valid():
+            peca = form.save(commit=False)
+            peca.chamado = chamado
+            peca.save()
+            messages.success(request, f'Peça "{peca.descricao}" adicionada com sucesso.')
+        else:
+            messages.error(request, 'Erro ao adicionar peça. Verifique os campos.')
+
+    return redirect('detalhe_chamado', chamado_id=chamado.id)
+
 
 @login_required
 def mudar_status_view(request, chamado_id):

@@ -20,4 +20,6 @@ urlpatterns = [
     path('chamados/<int:chamado_id>/', views.detalhe_chamado, name='detalhe_chamado'),
     path('chamados/<int:chamado_id>/atribuir/', views.atribuir_tecnico_view, name='atribuir_tecnico'),
     path('chamados/<int:chamado_id>/status/', views.mudar_status_view, name='mudar_status'),
+    path('chamados/<int:chamado_id>/atendimento/', views.registrar_atendimento_view, name='registrar_atendimento'),
+    path('chamados/<int:chamado_id>/pecas/', views.adicionar_peca_view, name='adicionar_peca'),
 ]
