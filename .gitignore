@@ -1,5 +1,6 @@
 # ambiente virtual
 venv/
+.venv
 
 # variáveis de ambiente — nunca versionar
 .env

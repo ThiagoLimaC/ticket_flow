@@ -3,6 +3,15 @@
 {% block title %}Dashboard | TicketFlow{% endblock %}
 
 {% block content %}
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
+{% endif %}
+
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>Painel de Chamados</h2>
     {% if request.user.perfil.is_cliente or request.user.perfil.is_admin %}
@@ -62,7 +71,13 @@
                         <td>#{{ chamado.id }}</td>
                         <td>{{ chamado.titulo }}</td>
                         <td>
-                            <span class="badge {% if chamado.status == 'aberto' %}bg-warning text-dark{% elif chamado.status == 'concluido' %}bg-success{% else %}bg-info{% endif %}">
+                            <span class="badge
+                                {% if chamado.status == 'aberto' %}bg-warning text-dark
+                                {% elif chamado.status == 'em_andamento' %}bg-primary
+                                {% elif chamado.status == 'aguardando' %}bg-secondary
+                                {% elif chamado.status == 'resolvido' %}bg-success
+                                {% elif chamado.status == 'fechado' %}bg-dark
+                                {% endif %}">
                                 {{ chamado.get_status_display }}
                             </span>
                         </td>

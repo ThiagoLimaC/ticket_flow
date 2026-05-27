@@ -54,10 +54,9 @@ class AbrirChamadoForm(forms.ModelForm):
         # cliente vê apenas os equipamentos da sua empresa
         if perfil.is_admin:
             self.fields['equipamento'].queryset = Equipamento.objects.select_related('cliente').all()
+        elif perfil.empresa:
+            self.fields['equipamento'].queryset = Equipamento.objects.filter(cliente=perfil.empresa)
         else:
-            # filtra equipamentos pelo usuário logado como aberto_por
-            # assume que o User cliente está vinculado a uma EmpresaCliente via chamados
-            # no MVP: admin cadastra o cliente e associa o User manualmente
             self.fields['equipamento'].queryset = Equipamento.objects.none()
 
         # também precisamos passar o cliente para o chamado

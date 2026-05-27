@@ -12,7 +12,23 @@
     <div class="card-header">Resumo do Chamado</div>
     <div class="card-body">
         <div class="row">
-            <div class="col-md-6"><int:chamado_id/card-header">Selecionar Técnico</div>
+            <div class="col-md-6">
+                <p><strong>Título:</strong> {{ chamado.titulo }}</p>
+                <p><strong>Cliente:</strong> {{ chamado.cliente }}</p>
+                <p><strong>Equipamento:</strong> {{ chamado.equipamento }}</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Categoria:</strong> {{ chamado.categoria }}</p>
+                <p><strong>Prioridade:</strong> {{ chamado.get_prioridade_display }}</p>
+                <p><strong>Status:</strong> {{ chamado.get_status_display }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Formulário de atribuição -->
+<div class="card shadow-sm">
+    <div class="card-header">Selecionar Técnico</div>
     <div class="card-body">
         <form method="post">
             {% csrf_token %}
