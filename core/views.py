@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.utils import timezone
 from .models import Chamado, EmpresaCliente, Equipamento, Categoria
 from .forms import (
     EmpresaClienteForm, EquipamentoForm, AbrirChamadoForm,
@@ -37,10 +38,14 @@ def dashboard(request):
             aberto_por=request.user
         ).order_by('-data_abertura')
 
+    status_encerrados = [Chamado.Status.RESOLVIDO, Chamado.Status.FECHADO]
     context = {
         'chamados': chamados,
         'total_abertos': chamados.filter(status=Chamado.Status.ABERTO).count(),
         'total_em_atendimento': chamados.filter(status=Chamado.Status.EM_ANDAMENTO).count(),
+        'total_atrasados': chamados.filter(
+            sla_prazo__lt=timezone.now()
+        ).exclude(status__in=status_encerrados).count(),
     }
     return render(request, 'core/dashboard.html', context)
 
