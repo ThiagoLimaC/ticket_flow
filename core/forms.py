@@ -1,5 +1,6 @@
 from django import forms
 from .models import EmpresaCliente, Equipamento, Chamado, Categoria
+from .services import TRANSICOES_PERMITIDAS
 from django.contrib.auth.models import User
 
 
@@ -62,6 +63,29 @@ class AbrirChamadoForm(forms.ModelForm):
         # também precisamos passar o cliente para o chamado
         # guardamos o usuário para uso no save da view
         self.usuario = usuario
+
+class MudarStatusForm(forms.Form):
+    novo_status = forms.ChoiceField(
+        label='Novo status',
+        widget=forms.Select(attrs={'class': 'form-select'}),
+    )
+    comentario = forms.CharField(
+        label='Comentário',
+        required=False,
+        widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'placeholder': 'Opcional'}),
+    )
+
+    def __init__(self, perfil, status_atual, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        opcoes = TRANSICOES_PERMITIDAS.get(status_atual, [])
+
+        # técnico não pode fechar nem reabrir — essas transições são só do admin
+        if perfil.is_tecnico:
+            opcoes = [s for s in opcoes if s not in (Chamado.Status.FECHADO, Chamado.Status.ABERTO)]
+
+        label_map = dict(Chamado.Status.choices)
+        self.fields['novo_status'].choices = [(s, label_map[s]) for s in opcoes]
+
 
 class AtribuirTecnicoForm(forms.Form):
     # Form simples, não ModelForm — porque não estamos salvando

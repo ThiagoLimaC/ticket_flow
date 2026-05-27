@@ -1,5 +1,12 @@
 from .models import Chamado, Movimentacao
 
+# mapa de transições válidas: status_atual → [status possíveis]
+TRANSICOES_PERMITIDAS = {
+    Chamado.Status.EM_ANDAMENTO: [Chamado.Status.AGUARDANDO, Chamado.Status.RESOLVIDO],
+    Chamado.Status.AGUARDANDO:   [Chamado.Status.EM_ANDAMENTO, Chamado.Status.RESOLVIDO],
+    Chamado.Status.RESOLVIDO:    [Chamado.Status.FECHADO, Chamado.Status.ABERTO],
+}
+
 
 def abrir_chamado(form, usuario):
     chamado = form.save(commit=False)
@@ -21,6 +28,23 @@ def abrir_chamado(form, usuario):
     )
 
     return chamado
+
+def mudar_status(chamado, novo_status, responsavel, comentario=''):
+    status_anterior = chamado.status
+    chamado.status = novo_status
+    # ao reabrir, limpa o técnico para permitir nova atribuição
+    if novo_status == Chamado.Status.ABERTO:
+        chamado.tecnico_responsavel = None
+    chamado.save()
+    Movimentacao.objects.create(
+        chamado=chamado,
+        responsavel=responsavel,
+        status_anterior=status_anterior,
+        status_novo=novo_status,
+        comentario=comentario,
+    )
+    return chamado
+
 
 def atribuir_tecnico(chamado, tecnico, responsavel):
     """

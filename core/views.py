@@ -2,9 +2,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import Chamado, EmpresaCliente, Equipamento, Categoria
-from .forms import EmpresaClienteForm, EquipamentoForm, AbrirChamadoForm, AtribuirTecnicoForm
+from .forms import EmpresaClienteForm, EquipamentoForm, AbrirChamadoForm, AtribuirTecnicoForm, MudarStatusForm
 from usuarios.decorators import requer_perfil
-from .services import abrir_chamado, atribuir_tecnico
+from .services import abrir_chamado, atribuir_tecnico, mudar_status, TRANSICOES_PERMITIDAS
 
 
 @login_required
@@ -152,11 +152,54 @@ def detalhe_chamado(request, chamado_id):
     movimentacoes = chamado.movimentacoes.all()
     pecas = chamado.pecas.all()
 
+    # monta o form de mudança de status se o usuário tiver transições disponíveis
+    form_status = None
+    if not perfil.is_cliente and chamado.status != Chamado.Status.FECHADO:
+        form_candidato = MudarStatusForm(perfil, chamado.status)
+        if form_candidato.fields['novo_status'].choices:
+            form_status = form_candidato
+
     return render(request, 'core/chamados/detalhe.html', {
         'chamado': chamado,
         'movimentacoes': movimentacoes,
         'pecas': pecas,
+        'form_status': form_status,
     })
+
+@login_required
+def mudar_status_view(request, chamado_id):
+    chamado = get_object_or_404(Chamado, id=chamado_id)
+    perfil = request.user.perfil
+
+    # cliente não tem essa permissão
+    if perfil.is_cliente:
+        messages.error(request, 'Você não tem permissão para alterar o status de um chamado.')
+        return redirect('detalhe_chamado', chamado_id=chamado.id)
+
+    # chamado fechado é imutável
+    if chamado.status == Chamado.Status.FECHADO:
+        messages.error(request, 'Chamado fechado não pode ser alterado.')
+        return redirect('detalhe_chamado', chamado_id=chamado.id)
+
+    # técnico só pode alterar chamados atribuídos a ele
+    if perfil.is_tecnico and chamado.tecnico_responsavel != request.user:
+        messages.error(request, 'Você não tem acesso a este chamado.')
+        return redirect('dashboard')
+
+    if request.method == 'POST':
+        form = MudarStatusForm(perfil, chamado.status, request.POST)
+        if form.is_valid():
+            novo_status = form.cleaned_data['novo_status']
+            comentario = form.cleaned_data['comentario']
+            chamado = mudar_status(chamado, novo_status, request.user, comentario)
+            messages.success(request, f'Status atualizado para "{chamado.get_status_display()}".')
+            return redirect('detalhe_chamado', chamado_id=chamado.id)
+
+    # form inválido (transição não permitida): avisa e volta
+    if request.method == 'POST':
+        messages.error(request, 'Transição de status inválida.')
+    return redirect('detalhe_chamado', chamado_id=chamado.id)
+
 
 @requer_perfil('admin')
 def atribuir_tecnico_view(request, chamado_id):

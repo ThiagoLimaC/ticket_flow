@@ -109,6 +109,31 @@
 </div>
 {% endif %}
 
+<!-- Alterar status -->
+{% if form_status %}
+<div class="card shadow-sm mb-4">
+    <div class="card-header">Alterar Status</div>
+    <div class="card-body">
+        <form method="post" action="{% url 'mudar_status' chamado.id %}">
+            {% csrf_token %}
+            <div class="row align-items-end g-3">
+                <div class="col-md-3">
+                    <label class="form-label">Novo status</label>
+                    {{ form_status.novo_status }}
+                </div>
+                <div class="col-md-7">
+                    <label class="form-label">Comentário <span class="text-muted small">(opcional)</span></label>
+                    {{ form_status.comentario }}
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">Confirmar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endif %}
+
 <!-- Movimentações -->
 <div class="card shadow-sm">
     <div class="card-header">Histórico de Movimentações</div>

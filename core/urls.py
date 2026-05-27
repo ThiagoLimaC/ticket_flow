@@ -19,4 +19,5 @@ urlpatterns = [
     path('chamados/abrir/', views.abrir_chamado_view, name='abrir_chamado'),
     path('chamados/<int:chamado_id>/', views.detalhe_chamado, name='detalhe_chamado'),
     path('chamados/<int:chamado_id>/atribuir/', views.atribuir_tecnico_view, name='atribuir_tecnico'),
+    path('chamados/<int:chamado_id>/status/', views.mudar_status_view, name='mudar_status'),
 ]
