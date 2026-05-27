@@ -225,9 +225,18 @@ class Command(BaseCommand):
 
     def _reset(self):
         self.stdout.write(self.style.WARNING('Removendo chamados, movimentações e peças...'))
-        PecaUtilizada.objects.all().delete()
-        Movimentacao.objects.all().delete()
-        Chamado.objects.all().delete()
+        try:
+            n_pecas, _    = PecaUtilizada.objects.all().delete()
+            n_mov, _      = Movimentacao.objects.all().delete()
+            n_chamados, _ = Chamado.objects.all().delete()
+            self.stdout.write(
+                f'  Removidos: {n_chamados} chamado(s), {n_mov} movimentação(ões), {n_pecas} peça(s).'
+            )
+        except Exception as e:
+            raise SystemExit(
+                self.style.ERROR(f'\nErro ao apagar dados: {e}\n'
+                                 'Verifique se há dados com integridade inconsistente no banco.')
+            )
 
     def _criar_usuario(self, username, senha, tipo, superuser=False):
         user, created = User.objects.get_or_create(username=username)
