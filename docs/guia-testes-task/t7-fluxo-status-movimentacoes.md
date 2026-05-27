@@ -2,6 +2,10 @@
 
 Branch: `t7-fluxo-status-movimentacoes`
 
+## O que esta task implementa
+
+Implementa o fluxo completo de mudança de status dos chamados com registro automático de movimentações. Técnicos podem mover seus chamados entre `Em andamento`, `Aguardando` e `Resolvido`. Apenas o admin pode fechar (`Resolvido → Fechado`) ou reabrir (`Resolvido → Aberto`) um chamado. Ao reabrir, o técnico responsável é desvinculado automaticamente para permitir nova atribuição. Chamados fechados são imutáveis. Um card inline no detalhe exibe apenas as transições válidas para o perfil e status atual.
+
 ---
 
 ## Pré-requisitos

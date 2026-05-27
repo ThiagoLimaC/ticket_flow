@@ -2,6 +2,10 @@
 
 Branch de origem: `t5-abertura-de-chamado`
 
+## O que esta task implementa
+
+Permite que admins e clientes abram chamados de suporte. O formulário coleta título, descrição, categoria, prioridade e equipamento. O cliente só enxerga os equipamentos da sua própria empresa. O prazo de SLA é calculado automaticamente no momento da criação (`data_abertura + categoria.sla_horas`). Técnicos são bloqueados de abrir chamados. A primeira movimentação (`Aberto → Aberto`) é registrada automaticamente ao criar o chamado.
+
 ---
 
 ## Pré-requisitos

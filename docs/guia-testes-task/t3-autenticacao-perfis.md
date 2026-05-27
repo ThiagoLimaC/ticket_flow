@@ -2,6 +2,10 @@
 
 Branch de origem: `main`
 
+## O que esta task implementa
+
+Implementa o sistema de autenticação (login/logout) e o model `Perfil`, que estende o `User` do Django com três tipos de acesso: **Admin**, **Técnico** e **Cliente**. Um signal `post_save` cria automaticamente o perfil toda vez que um novo usuário é cadastrado. O perfil do cliente pode ser vinculado a uma `EmpresaCliente`. Cada tipo de perfil enxerga uma interface diferente e tem acesso restrito a certas funcionalidades via decorator `@requer_perfil`.
+
 ---
 
 ## Pré-requisitos

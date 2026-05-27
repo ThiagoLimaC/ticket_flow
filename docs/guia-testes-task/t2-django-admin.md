@@ -2,6 +2,10 @@
 
 Branch de origem: `main`
 
+## O que esta task implementa
+
+Configura o painel administrativo do Django (`/admin`) com todos os modelos do sistema registrados e customizados. O admin permite que o superusuário gerencie diretamente Chamados, Categorias, Empresas Clientes, Equipamentos, Perfis, Movimentações e Peças Utilizadas. Movimentações são registradas como somente leitura por design — não é possível editá-las nem deletá-las pelo painel.
+
 ---
 
 ## Pré-requisitos

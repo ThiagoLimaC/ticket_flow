@@ -2,6 +2,10 @@
 
 Branch de origem: `t6-atribuicao-de-tecnico`
 
+## O que esta task implementa
+
+Permite que o admin atribua um técnico responsável a um chamado aberto. Ao atribuir, o status muda automaticamente de **Aberto** para **Em andamento** e uma movimentação é registrada. Um chamado já atribuído não pode ser reatribuído no MVP. O técnico só consegue acessar e trabalhar nos chamados vinculados a ele.
+
 ---
 
 ## Pré-requisitos

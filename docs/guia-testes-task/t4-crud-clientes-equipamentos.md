@@ -2,6 +2,10 @@
 
 Branch de origem: `t4-crud-clientes`
 
+## O que esta task implementa
+
+Cria o fluxo completo de cadastro e edição de **Empresas Clientes** e seus **Equipamentos**, acessível somente pelo perfil Admin. Cada empresa pode ter múltiplos equipamentos vinculados (tipo, modelo, número de série e localização). O detalhe da empresa lista todos os equipamentos cadastrados. Ao criar um equipamento a partir do detalhe de um cliente, o campo cliente vem pré-selecionado automaticamente.
+
 ---
 
 ## Pré-requisitos
