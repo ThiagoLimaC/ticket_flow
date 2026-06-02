@@ -21,7 +21,7 @@ Acesse `http://localhost:8080/admin` e faça login com o usuário **admin** / `a
 
 ## Testes
 
-### Teste 1 — Acesso ao painel administrativo
+### Teste 1 — Acesso ao painel administrativo ✅
 
 1. Acesse `http://localhost:8080/admin`
 2. Faça login com `admin` / `admin123`
@@ -32,7 +32,7 @@ Acesse `http://localhost:8080/admin` e faça login com o usuário **admin** / `a
 
 ---
 
-### Teste 2 — Modelos registrados no admin
+### Teste 2 — Modelos registrados no admin ✅
 
 No painel, verifique se todos os modelos estão listados:
 
@@ -51,7 +51,7 @@ No painel, verifique se todos os modelos estão listados:
 
 ---
 
-### Teste 3 — CRUD de Categoria via admin
+### Teste 3 — CRUD de Categoria via admin ✅
 
 1. Clique em **Categorias → Adicionar**
 2. Preencha: nome `"Rede"`, SLA `4` horas
@@ -62,7 +62,7 @@ No painel, verifique se todos os modelos estão listados:
 
 ---
 
-### Teste 4 — Movimentações são somente leitura
+### Teste 4 — Movimentações são somente leitura ✅
 
 1. Clique em **Movimentações**
 2. Clique em qualquer movimentação existente
@@ -72,7 +72,7 @@ No painel, verifique se todos os modelos estão listados:
 
 ---
 
-### Teste 5 — Perfil vinculado ao usuário
+### Teste 5 — Perfil vinculado ao usuário ✅
 
 1. Clique em **Perfis**
 2. Abra o perfil de `cliente1`
