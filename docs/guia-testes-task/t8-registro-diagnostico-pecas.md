@@ -29,7 +29,7 @@ Usuários necessários:
 
 ## Testes
 
-### Teste 1 — Cards de registro aparecem no detalhe do chamado
+### Teste 1 — Cards de registro aparecem no detalhe do chamado ✅
 
 1. Login como **tecnico1**
 2. Acesse o detalhe de um chamado **Em andamento** atribuído a você
@@ -46,7 +46,7 @@ Usuários necessários:
 
 ---
 
-### Teste 2 — Técnico registra diagnóstico e solução
+### Teste 2 — Técnico registra diagnóstico e solução ✅
 
 1. No card **Registro de Atendimento**, preencha:
    - Diagnóstico: `Fonte do computador queimada`
@@ -61,7 +61,7 @@ Usuários necessários:
 
 ---
 
-### Teste 3 — Técnico atualiza o diagnóstico (sobrescreve)
+### Teste 3 — Técnico atualiza o diagnóstico (sobrescreve) ✅
 
 1. Com o diagnóstico já salvo, altere o campo **Diagnóstico** para `Fonte e placa-mãe danificadas`
 2. Clique em **Salvar atendimento**
@@ -73,7 +73,7 @@ Usuários necessários:
 
 ---
 
-### Teste 4 — Técnico adiciona peças
+### Teste 4 — Técnico adiciona peças ✅
 
 1. No form **Adicionar peça**, preencha:
    - Descrição: `Fonte ATX 500W`
@@ -95,7 +95,7 @@ Usuários necessários:
 
 ---
 
-### Teste 5 — Peças acumulam na tabela
+### Teste 5 — Peças acumulam na tabela ✅
 
 1. Adicione mais de uma peça ao mesmo chamado
 
@@ -105,7 +105,7 @@ Usuários necessários:
 
 ---
 
-### Teste 6 — Campos obrigatórios do form de peça
+### Teste 6 — Campos obrigatórios do form de peça ✅
 
 1. Tente adicionar uma peça sem preencher a **Descrição**
 
@@ -115,7 +115,7 @@ Usuários necessários:
 
 ---
 
-### Teste 7 — Status "Aguardando" também permite registro
+### Teste 7 — Status "Aguardando" também permite registro ✅
 
 1. No card **Alterar Status**, mude o chamado para **Aguardando**
 2. Tente salvar o atendimento e adicionar uma peça
@@ -126,7 +126,7 @@ Usuários necessários:
 
 ---
 
-### Teste 8 — Chamado resolvido bloqueia registro
+### Teste 8 — Chamado resolvido bloqueia registro ✅
 
 1. Mude o status do chamado para **Resolvido**
 2. Verifique a página de detalhe
@@ -138,7 +138,7 @@ Usuários necessários:
 
 ---
 
-### Teste 9 — Cliente não pode registrar
+### Teste 9 — Cliente não pode registrar ✅
 
 1. Login como **cliente1**
 2. Acesse o detalhe de um chamado da empresa dele
@@ -149,7 +149,7 @@ Usuários necessários:
 
 ---
 
-### Teste 10 — Técnico não registra em chamado de outro técnico
+### Teste 10 — Técnico não registra em chamado de outro técnico ✅
 
 1. Login como **tecnico1**
 2. Acesse via URL direta `/chamados/<id>/atendimento/` de um chamado atribuído a outro técnico
@@ -160,7 +160,7 @@ Usuários necessários:
 
 ---
 
-### Teste 11 — Admin pode registrar em qualquer chamado ativo
+### Teste 11 — Admin pode registrar em qualquer chamado ativo ✅
 
 1. Login como **admin**
 2. Acesse o detalhe de um chamado **Em andamento**

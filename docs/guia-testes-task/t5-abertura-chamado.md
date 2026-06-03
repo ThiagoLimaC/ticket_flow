@@ -32,7 +32,7 @@ Usuários necessários:
 
 ## Testes
 
-### Teste 1 — Admin abre um chamado
+### Teste 1 — Admin abre um chamado ✅
 
 1. Login como **admin**
 2. Clique em **Novo Chamado**
@@ -53,8 +53,7 @@ Usuários necessários:
 
 ---
 
-### Teste 2 — Cliente abre um chamado
-
+### Teste 2 — Cliente abre um chamado ✅
 1. Login como **cliente1**
 2. Clique em **Novo Chamado**
 3. Observe o campo **Equipamento**
@@ -71,7 +70,7 @@ Usuários necessários:
 
 ---
 
-### Teste 3 — Cliente sem empresa associada não consegue abrir chamado
+### Teste 3 — Cliente sem empresa associada não consegue abrir chamado ✅
 
 1. Crie um usuário cliente sem empresa vinculada no admin Django
 2. Login com esse usuário
@@ -83,7 +82,7 @@ Usuários necessários:
 
 ---
 
-### Teste 4 — Técnico não pode abrir chamado
+### Teste 4 — Técnico não pode abrir chamado ✅
 
 1. Login como **tecnico1**
 2. Clique em **Novo Chamado** (se visível) ou acesse `http://localhost:8080/chamados/abrir/`
@@ -95,7 +94,7 @@ Usuários necessários:
 
 ---
 
-### Teste 5 — SLA calculado automaticamente
+### Teste 5 — SLA calculado automaticamente ✅
 
 1. Abra um chamado com a categoria **Hardware** (SLA: 8h)
 2. Acesse o detalhe do chamado criado
@@ -106,7 +105,7 @@ Usuários necessários:
 
 ---
 
-### Teste 6 — Campos obrigatórios
+### Teste 6 — Campos obrigatórios ✅
 
 1. Acesse **Novo Chamado** como admin
 2. Clique em **Abrir Chamado** sem preencher nenhum campo
@@ -117,7 +116,7 @@ Usuários necessários:
 
 ---
 
-### Teste 7 — Cliente só vê seus próprios chamados
+### Teste 7 — Cliente só vê seus próprios chamados ✅
 
 1. Abra um chamado como **admin**
 2. Login como **cliente1**

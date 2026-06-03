@@ -21,7 +21,7 @@ Todos os testes desta task exigem login como **admin** (`admin123`).
 
 ## Testes — Clientes
 
-### Teste 1 — Listar clientes
+### Teste 1 — Listar clientes ✅
 
 1. Login como **admin**
 2. No dashboard, clique em **Gerenciar Clientes**
@@ -33,7 +33,7 @@ Todos os testes desta task exigem login como **admin** (`admin123`).
 
 ---
 
-### Teste 2 — Criar novo cliente
+### Teste 2 — Criar novo cliente ✅
 
 1. Clique em **Novo Cliente**
 2. Preencha:
@@ -51,7 +51,7 @@ Todos os testes desta task exigem login como **admin** (`admin123`).
 
 ---
 
-### Teste 3 — Editar cliente
+### Teste 3 — Editar cliente ✅
 
 1. Na lista de clientes, acesse o detalhe de qualquer cliente
 2. Clique em **Editar**
@@ -64,7 +64,7 @@ Todos os testes desta task exigem login como **admin** (`admin123`).
 
 ---
 
-### Teste 4 — Criar cliente com CNPJ duplicado
+### Teste 4 — Criar cliente com CNPJ duplicado ✅
 
 1. Tente cadastrar um novo cliente com o mesmo CNPJ de um já existente
 
@@ -74,7 +74,7 @@ Todos os testes desta task exigem login como **admin** (`admin123`).
 
 ---
 
-### Teste 5 — Técnico e cliente não têm acesso ao CRUD
+### Teste 5 — Técnico e cliente não têm acesso ao CRUD ✅
 
 1. Login como **tecnico1**
 2. Acesse `http://localhost:8080/clientes/novo/`
@@ -85,7 +85,7 @@ Todos os testes desta task exigem login como **admin** (`admin123`).
 
 ## Testes — Equipamentos
 
-### Teste 6 — Criar equipamento para um cliente
+### Teste 6 — Criar equipamento para um cliente ✅
 
 1. Acesse o detalhe de um cliente (ex: `Empresa Teste`)
 2. Clique em **Novo Equipamento**
@@ -103,7 +103,7 @@ Todos os testes desta task exigem login como **admin** (`admin123`).
 
 ---
 
-### Teste 7 — Editar equipamento
+### Teste 7 — Editar equipamento ✅
 
 1. No detalhe do cliente, clique em **Editar** ao lado do equipamento
 2. Altere a **Localização**
@@ -115,7 +115,7 @@ Todos os testes desta task exigem login como **admin** (`admin123`).
 
 ---
 
-### Teste 8 — Equipamento pré-selecionado ao criar pelo detalhe do cliente
+### Teste 8 — Equipamento pré-selecionado ao criar pelo detalhe do cliente ✅
 
 1. Acesse o detalhe de um cliente específico
 2. Clique em **Novo Equipamento**

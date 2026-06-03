@@ -29,7 +29,7 @@ Usuários necessários:
 
 ## Testes
 
-### Teste 1 — Botão "Atribuir Técnico" aparece apenas para admin
+### Teste 1 — Botão "Atribuir Técnico" aparece apenas para admin ✅
 
 1. Login como **admin** e acesse o detalhe de um chamado com status **Aberto**
 
@@ -43,7 +43,7 @@ Usuários necessários:
 
 ---
 
-### Teste 2 — Tela de atribuição exibe resumo do chamado
+### Teste 2 — Tela de atribuição exibe resumo do chamado ✅
 
 1. Login como **admin**
 2. No detalhe de um chamado aberto, clique em **Atribuir Técnico**
@@ -55,7 +55,7 @@ Usuários necessários:
 
 ---
 
-### Teste 3 — Atribuir técnico ao chamado
+### Teste 3 — Atribuir técnico ao chamado ✅
 
 1. Na tela de atribuição, selecione `tecnico1`
 2. Clique em **Atribuir**
@@ -70,7 +70,7 @@ Usuários necessários:
 
 ---
 
-### Teste 4 — Chamado já atribuído não pode ser reatribuído
+### Teste 4 — Chamado já atribuído não pode ser reatribuído ✅
 
 1. Tente acessar `http://localhost:8080/chamados/<id>/atribuir/` de um chamado que já tem técnico
 
@@ -80,7 +80,7 @@ Usuários necessários:
 
 ---
 
-### Teste 5 — Somente admin pode atribuir técnico
+### Teste 5 — Somente admin pode atribuir técnico ✅
 
 1. Login como **tecnico1**
 2. Acesse `http://localhost:8080/chamados/<id>/atribuir/`
@@ -96,7 +96,7 @@ Usuários necessários:
 
 ---
 
-### Teste 6 — Técnico só vê chamados atribuídos a ele
+### Teste 6 — Técnico só vê chamados atribuídos a ele ✅
 
 1. Crie dois chamados e atribua cada um a um técnico diferente (se houver dois técnicos)
    - Ou: crie um chamado e deixe sem técnico
@@ -109,7 +109,7 @@ Usuários necessários:
 
 ---
 
-### Teste 7 — Chamado fechado não pode ser atribuído
+### Teste 7 — Chamado fechado não pode ser atribuído ✅
 
 1. Encontre ou crie um chamado com status **Fechado**
 2. Login como **admin** e acesse `http://localhost:8080/chamados/<id>/atribuir/`

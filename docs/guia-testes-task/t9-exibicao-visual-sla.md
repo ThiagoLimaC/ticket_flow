@@ -30,7 +30,7 @@ Usuários necessários:
 
 ## Testes
 
-### Teste 1 — Dashboard exibe 4 cards de contagem
+### Teste 1 — Dashboard exibe 4 cards de contagem ✅
 
 1. Login como **admin**
 2. Acesse o dashboard (`http://localhost:8080/`)
@@ -45,7 +45,7 @@ Usuários necessários:
 
 ---
 
-### Teste 2 — Coluna SLA na tabela de chamados
+### Teste 2 — Coluna SLA na tabela de chamados ✅
 
 1. No dashboard, observe a tabela de chamados
 
@@ -56,7 +56,7 @@ Usuários necessários:
 
 ---
 
-### Teste 3 — Chamado atrasado exibe badge vermelho e linha destacada
+### Teste 3 — Chamado atrasado exibe badge vermelho e linha destacada ✅
 
 1. Certifique-se de que existe um chamado ativo (Aberto, Em andamento ou Aguardando) com SLA vencido
 2. Acesse o dashboard
@@ -68,7 +68,7 @@ Usuários necessários:
 
 ---
 
-### Teste 4 — Chamado resolvido/fechado não conta como atrasado
+### Teste 4 — Chamado resolvido/fechado não conta como atrasado ✅
 
 1. Resolva ou feche um chamado que esteja com SLA vencido
 2. Reacesse o dashboard
@@ -80,7 +80,7 @@ Usuários necessários:
 
 ---
 
-### Teste 5 — Técnico vê SLA dos seus chamados
+### Teste 5 — Técnico vê SLA dos seus chamados ❌​
 
 1. Login como **tecnico1**
 2. Acesse o dashboard

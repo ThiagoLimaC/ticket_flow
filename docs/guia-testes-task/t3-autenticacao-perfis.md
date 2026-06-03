@@ -27,7 +27,7 @@ Usuários necessários:
 
 ## Testes
 
-### Teste 1 — Acesso sem autenticação redireciona para login
+### Teste 1 — Acesso sem autenticação redireciona para login ✅
 
 1. Sem estar logado, acesse `http://localhost:8080`
 
@@ -37,7 +37,7 @@ Usuários necessários:
 
 ---
 
-### Teste 2 — Login com credenciais corretas
+### Teste 2 — Login com credenciais corretas ✅
 
 1. Acesse `http://localhost:8080/accounts/login/`
 2. Preencha `admin` / `admin123` e clique em **Entrar**
@@ -48,7 +48,7 @@ Usuários necessários:
 
 ---
 
-### Teste 3 — Login com credenciais erradas
+### Teste 3 — Login com credenciais erradas ✅
 
 1. Na tela de login, preencha `admin` / `senhaerrada`
 2. Clique em **Entrar**
@@ -59,7 +59,7 @@ Usuários necessários:
 
 ---
 
-### Teste 4 — Logout
+### Teste 4 — Logout ✅
 
 1. Logado como qualquer usuário, clique em **Sair**
 
@@ -70,7 +70,7 @@ Usuários necessários:
 
 ---
 
-### Teste 5 — Navbar por perfil
+### Teste 5 — Navbar por perfil ✅
 
 Verifique o que aparece na navbar para cada perfil:
 
@@ -88,7 +88,7 @@ Verifique o que aparece na navbar para cada perfil:
 
 ---
 
-### Teste 6 — Restrição de acesso por perfil
+### Teste 6 — Restrição de acesso por perfil ✅
 
 **Técnico tentando acessar área de admin:**
 
@@ -97,7 +97,7 @@ Verifique o que aparece na navbar para cada perfil:
 
 **Resultado esperado:** redirecionamento para o dashboard (sem mensagem de erro, acesso simplesmente negado)
 
-**Cliente tentando acessar área de admin:**
+**Cliente tentando acessar área de admin:** ✅
 
 1. Login como `cliente1`
 2. Acesse `http://localhost:8080/clientes/`
@@ -106,14 +106,14 @@ Verifique o que aparece na navbar para cada perfil:
 
 ---
 
-### Teste 7 — Cada usuário vê apenas seus chamados
+### Teste 7 — Cada usuário vê apenas seus chamados ✅
 
 1. Login como **admin** → crie um chamado
 2. Login como **cliente1** → acesse o dashboard
 
 **Resultado esperado:**
-- Cliente vê apenas os chamados abertos por ele
-- Não aparece o chamado do admin na lista do cliente
+- Cliente vê apenas os chamados abertos por ele ✅
+- Não aparece o chamado do admin na lista do cliente ✅
 
 ---
 

@@ -40,7 +40,7 @@ Usuários necessários:
 
 ## Testes
 
-### Teste 1 — Técnico vê o card "Alterar Status"
+### Teste 1 — Técnico vê o card "Alterar Status" ✅
 
 1. Faça logout e login como **tecnico1**
 2. Acesse o detalhe do chamado criado na preparação
@@ -54,7 +54,7 @@ Usuários necessários:
 
 ---
 
-### Teste 2 — Técnico: Em andamento → Aguardando
+### Teste 2 — Técnico: Em andamento → Aguardando ✅
 
 1. Como **tecnico1**, no card "Alterar Status":
    - Selecione **Aguardando**
@@ -68,7 +68,7 @@ Usuários necessários:
 
 ---
 
-### Teste 3 — Técnico: Aguardando → Resolvido
+### Teste 3 — Técnico: Aguardando → Resolvido ✅
 
 1. Como **tecnico1**, selecione **Resolvido** e clique em **Confirmar**
 
@@ -80,7 +80,7 @@ Usuários necessários:
 
 ---
 
-### Teste 4 — Técnico não pode fechar nem reabrir
+### Teste 4 — Técnico não pode fechar nem reabrir ✅
 
 1. Ainda como **tecnico1**, tente acessar diretamente via URL:
    `http://localhost:8080/chamados/<id>/status/`
@@ -92,7 +92,7 @@ Usuários necessários:
 
 ---
 
-### Teste 5 — Admin: Resolvido → Aberto (reabrir)
+### Teste 5 — Admin: Resolvido → Aberto (reabrir) ✅
 
 1. Faça logout e login como **admin**
 2. Acesse o chamado (agora resolvido)
@@ -108,7 +108,7 @@ Usuários necessários:
 
 ---
 
-### Teste 6 — Admin: Resolvido → Fechado
+### Teste 6 — Admin: Resolvido → Fechado ✅
 
 1. Re-atribua o técnico (`tecnico1`) ao chamado reaberto
 2. Login como **tecnico1** e mude o status para **Resolvido**
@@ -132,7 +132,7 @@ Usuários necessários:
 
 ---
 
-### Teste 8 — Cliente não vê o card e não pode alterar status
+### Teste 8 — Cliente não vê o card e não pode alterar status ✅
 
 1. Faça login como **cliente1**
 2. Abra um chamado (Novo Chamado)
@@ -144,7 +144,7 @@ Usuários necessários:
 
 ---
 
-### Teste 9 — Histórico completo de movimentações
+### Teste 9 — Histórico completo de movimentações ✅
 
 Após executar os testes acima, verifique o histórico de movimentações no detalhe do chamado.
 
