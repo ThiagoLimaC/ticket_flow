@@ -14,14 +14,73 @@
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>Painel de Chamados</h2>
-    {% if request.user.perfil.is_cliente or request.user.perfil.is_admin %}
-        <a href="{% url 'abrir_chamado' %}" class="btn btn-primary">Novo Chamado</a>
-    {% endif %}
-
-    {% if request.user.perfil.is_admin %}
-        <a href="{% url 'listar_clientes' %}" class="btn btn-outline-primary">Gerenciar Clientes</a>
-    {% endif %}
+    <div class="d-flex gap-2">
+        {% if request.user.perfil.is_cliente or request.user.perfil.is_admin %}
+            <a href="{% url 'abrir_chamado' %}" class="btn btn-primary">Novo Chamado</a>
+        {% endif %}
+        {% if request.user.perfil.is_admin %}
+            <a href="{% url 'listar_clientes' %}" class="btn btn-outline-secondary">Gerenciar Clientes</a>
+        {% endif %}
+    </div>
 </div>
+
+{% if request.user.perfil.is_admin %}
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <h6 class="card-title text-muted mb-3">Filtrar Chamados</h6>
+        <form method="get" class="row g-2 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label form-label-sm">Técnico</label>
+                <select name="tecnico" class="form-select form-select-sm">
+                    <option value="">Todos</option>
+                    {% for t in todos_tecnicos %}
+                        <option value="{{ t.id }}" {% if filtro_tecnico == t.id|stringformat:"s" %}selected{% endif %}>
+                            {{ t.username }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label form-label-sm">Cliente</label>
+                <select name="cliente" class="form-select form-select-sm">
+                    <option value="">Todos</option>
+                    {% for c in todos_clientes %}
+                        <option value="{{ c.id }}" {% if filtro_cliente == c.id|stringformat:"s" %}selected{% endif %}>
+                            {{ c.nome }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label form-label-sm">Categoria</label>
+                <select name="categoria" class="form-select form-select-sm">
+                    <option value="">Todas</option>
+                    {% for cat in todas_categorias %}
+                        <option value="{{ cat.id }}" {% if filtro_categoria == cat.id|stringformat:"s" %}selected{% endif %}>
+                            {{ cat.nome }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label form-label-sm">Status</label>
+                <select name="status" class="form-select form-select-sm">
+                    <option value="">Todos</option>
+                    {% for val, label in todos_status %}
+                        <option value="{{ val }}" {% if filtro_status == val %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-2 d-flex gap-1">
+                <button type="submit" class="btn btn-sm btn-primary w-100">Filtrar</button>
+                <a href="{% url 'dashboard' %}" class="btn btn-sm btn-outline-secondary w-100">Limpar</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endif %}
 
 <div class="row mb-4">
     <div class="col-md-3">
@@ -69,6 +128,9 @@
                         <th>Título</th>
                         <th>Status</th>
                         <th>SLA</th>
+                        {% if request.user.perfil.is_admin %}
+                        <th>Técnico</th>
+                        {% endif %}
                         <th>Prioridade</th>
                         <th>Data</th>
                         <th>Ações</th>
@@ -99,6 +161,15 @@
                                 <span class="badge bg-success">No prazo</span>
                             {% endif %}
                         </td>
+                        {% if request.user.perfil.is_admin %}
+                        <td>
+                            {% if chamado.tecnico_responsavel %}
+                                {{ chamado.tecnico_responsavel.username }}
+                            {% else %}
+                                <span class="text-muted">—</span>
+                            {% endif %}
+                        </td>
+                        {% endif %}
                         <td>{{ chamado.get_prioridade_display }}</td>
                         <td>{{ chamado.data_abertura|date:"d/m/Y H:i" }}</td>
                         <td>
@@ -107,7 +178,7 @@
                     </tr>
                     {% empty %}
                     <tr>
-                        <td colspan="7" class="text-center text-muted">Nenhum chamado encontrado.</td>
+                        <td colspan="{% if request.user.perfil.is_admin %}8{% else %}7{% endif %}" class="text-center text-muted">Nenhum chamado encontrado.</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -115,4 +186,43 @@
         </div>
     </div>
 </div>
+
+{% if request.user.perfil.is_admin %}
+<div class="card shadow-sm mt-4">
+    <div class="card-body">
+        <h5 class="card-title mb-3">Comparativo de Técnicos</h5>
+        {% if tecnicos_comparativo %}
+        <div class="table-responsive">
+            <table class="table table-sm table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Técnico</th>
+                        <th class="text-center">Total de Chamados</th>
+                        <th class="text-center">Em Atendimento / Aguardando</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tecnico in tecnicos_comparativo %}
+                    <tr>
+                        <td>{{ tecnico.username }}</td>
+                        <td class="text-center">
+                            <a href="?tecnico={{ tecnico.id }}" class="badge bg-primary text-decoration-none">{{ tecnico.total }}</a>
+                        </td>
+                        <td class="text-center">
+                            <span class="badge {% if tecnico.ativos > 0 %}bg-warning text-dark{% else %}bg-secondary{% endif %}">
+                                {{ tecnico.ativos }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-muted">Nenhum técnico cadastrado.</p>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
 {% endblock %}

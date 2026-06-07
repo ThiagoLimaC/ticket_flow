@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.db.models import Count, Q
 from django.utils import timezone
 from .models import Chamado, EmpresaCliente, Equipamento, Categoria
 from .forms import (
@@ -12,6 +14,7 @@ from usuarios.decorators import requer_perfil
 from .services import abrir_chamado, atribuir_tecnico, mudar_status, TRANSICOES_PERMITIDAS
 
 STATUS_ATIVOS = (Chamado.Status.EM_ANDAMENTO, Chamado.Status.AGUARDANDO)
+STATUS_ENCERRADOS = [Chamado.Status.RESOLVIDO, Chamado.Status.FECHADO]
 
 def _pode_registrar_atendimento(usuario, chamado):
     """Retorna True se o usuário pode registrar diagnóstico/peças neste chamado."""
@@ -29,23 +32,70 @@ def _pode_registrar_atendimento(usuario, chamado):
 def dashboard(request):
     perfil = request.user.perfil
 
-    # admin e técnico veem todos os chamados
-    # cliente vê apenas os chamados da sua empresa
-    if perfil.is_admin or perfil.is_tecnico:
-        chamados = Chamado.objects.all().order_by('-data_abertura')
+    if perfil.is_admin:
+        chamados = Chamado.objects.select_related(
+            'tecnico_responsavel', 'cliente', 'categoria'
+        ).order_by('-data_abertura')
+
+        # filtros por GET params
+        tecnico_id = request.GET.get('tecnico')
+        cliente_id = request.GET.get('cliente')
+        categoria_id = request.GET.get('categoria')
+        status_filtro = request.GET.get('status')
+
+        if tecnico_id:
+            chamados = chamados.filter(tecnico_responsavel_id=tecnico_id)
+        if cliente_id:
+            chamados = chamados.filter(cliente_id=cliente_id)
+        if categoria_id:
+            chamados = chamados.filter(categoria_id=categoria_id)
+        if status_filtro:
+            chamados = chamados.filter(status=status_filtro)
+
+        tecnicos_comparativo = (
+            User.objects.filter(perfil__tipo='tecnico')
+            .annotate(
+                total=Count('chamados_atribuidos'),
+                ativos=Count(
+                    'chamados_atribuidos',
+                    filter=Q(chamados_atribuidos__status__in=['em_andamento', 'aguardando']),
+                ),
+            )
+            .order_by('-total')
+        )
+
+        context_extra = {
+            'tecnicos_comparativo': tecnicos_comparativo,
+            'todos_tecnicos': User.objects.filter(perfil__tipo='tecnico').order_by('username'),
+            'todos_clientes': EmpresaCliente.objects.all(),
+            'todas_categorias': Categoria.objects.all(),
+            'todos_status': Chamado.Status.choices,
+            'filtro_tecnico': tecnico_id or '',
+            'filtro_cliente': cliente_id or '',
+            'filtro_categoria': categoria_id or '',
+            'filtro_status': status_filtro or '',
+        }
+
+    elif perfil.is_tecnico:
+        chamados = Chamado.objects.filter(
+            tecnico_responsavel=request.user
+        ).order_by('-data_abertura')
+        context_extra = {}
+
     else:
         chamados = Chamado.objects.filter(
             aberto_por=request.user
         ).order_by('-data_abertura')
+        context_extra = {}
 
-    status_encerrados = [Chamado.Status.RESOLVIDO, Chamado.Status.FECHADO]
     context = {
         'chamados': chamados,
         'total_abertos': chamados.filter(status=Chamado.Status.ABERTO).count(),
         'total_em_atendimento': chamados.filter(status=Chamado.Status.EM_ANDAMENTO).count(),
         'total_atrasados': chamados.filter(
             sla_prazo__lt=timezone.now()
-        ).exclude(status__in=status_encerrados).count(),
+        ).exclude(status__in=STATUS_ENCERRADOS).count(),
+        **context_extra,
     }
     return render(request, 'core/dashboard.html', context)
 
