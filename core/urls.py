@@ -10,6 +10,7 @@ urlpatterns = [
     path('clientes/novo/', views.criar_cliente, name='criar_cliente'),
     path('clientes/<int:cliente_id>/', views.detalhe_cliente, name='detalhe_cliente'),
     path('clientes/<int:cliente_id>/editar/', views.editar_cliente, name='editar_cliente'),
+    path('clientes/<int:cliente_id>/historico/', views.historico_cliente, name='historico_cliente'),
 
     # equipamentos
     path('clientes/<int:cliente_id>/equipamentos/novo/', views.criar_equipamento, name='criar_equipamento'),

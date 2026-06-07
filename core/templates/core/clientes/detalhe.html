@@ -5,6 +5,7 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>{{ cliente.nome }}</h2>
     <div class="d-flex gap-2">
+        <a href="{% url 'historico_cliente' cliente.id %}" class="btn btn-outline-primary">Histórico de Atendimentos</a>
         <a href="{% url 'editar_cliente' cliente.id %}" class="btn btn-outline-secondary">Editar</a>
         <a href="{% url 'listar_clientes' %}" class="btn btn-outline-secondary">← Voltar</a>
     </div>

@@ -147,6 +147,29 @@ def detalhe_cliente(request, cliente_id):
     })
 
 
+@requer_perfil('admin')
+def historico_cliente(request, cliente_id):
+    cliente = get_object_or_404(EmpresaCliente, id=cliente_id)
+    chamados = (
+        cliente.chamados
+        .select_related('categoria', 'tecnico_responsavel', 'aberto_por', 'equipamento')
+        .prefetch_related('pecas')
+        .order_by('-data_abertura')
+    )
+    total_resolvidos = chamados.filter(
+        status__in=[Chamado.Status.RESOLVIDO, Chamado.Status.FECHADO]
+    ).count()
+    total_atrasados = chamados.filter(
+        sla_prazo__lt=timezone.now()
+    ).exclude(status__in=STATUS_ENCERRADOS).count()
+    return render(request, 'core/clientes/historico.html', {
+        'cliente': cliente,
+        'chamados': chamados,
+        'total_resolvidos': total_resolvidos,
+        'total_atrasados': total_atrasados,
+    })
+
+
 # ─── Equipamentos ─────────────────────────────────────────────────────────────
 
 @requer_perfil('admin')
