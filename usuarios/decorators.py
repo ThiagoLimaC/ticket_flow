@@ -1,4 +1,5 @@
 from functools import wraps
+from django.contrib import messages
 from django.shortcuts import redirect
 
 
@@ -16,6 +17,7 @@ def requer_perfil(*tipos):
 
             # usuário autenticado mas sem o perfil permitido vai para o dashboard
             if request.user.perfil.tipo not in tipos:
+                messages.error(request, 'Você não tem permissão para acessar esta página.')
                 return redirect('dashboard')
 
             return view_func(request, *args, **kwargs)
