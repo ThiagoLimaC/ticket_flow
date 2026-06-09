@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.core.paginator import Paginator
 from django.db.models import Count, Q
 from django.utils import timezone
 from .models import Chamado, EmpresaCliente, Equipamento, Categoria
@@ -88,8 +89,16 @@ def dashboard(request):
         ).order_by('-data_abertura')
         context_extra = {}
 
+    params = request.GET.copy()
+    params.pop('page', None)
+
+    paginator = Paginator(chamados, 10)
+    page_obj = paginator.get_page(request.GET.get('page'))
+
     context = {
         'chamados': chamados,
+        'page_obj': page_obj,
+        'query_string': params.urlencode(),
         'total_abertos': chamados.filter(status=Chamado.Status.ABERTO).count(),
         'total_em_atendimento': chamados.filter(status=Chamado.Status.EM_ANDAMENTO).count(),
         'total_atrasados': chamados.filter(
